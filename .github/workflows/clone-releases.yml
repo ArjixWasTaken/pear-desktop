@@ -10,5 +10,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           src_repo: pear-devs/pear-desktop
-          dst_repo: ArjixWasTaken/pear-desktop
+          dest_repo: ArjixWasTaken/pear-desktop
           copy_assets: true
