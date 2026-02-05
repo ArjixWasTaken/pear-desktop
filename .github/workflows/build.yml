@@ -89,7 +89,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release Pear Desktop
-    if: github.repository == 'pear-devs/pear-desktop' && github.ref == 'refs/heads/master'
+    if: github.repository == 'ArjixWasTaken/pear-desktop' && github.ref == 'refs/heads/master'
     needs: build
     steps:
       - uses: actions/checkout@v5
