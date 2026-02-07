@@ -807,8 +807,7 @@ app.whenReady().then(async () => {
       clearTimeout(updateTimeout);
     }, 2000);
     autoUpdater.on('update-available', () => {
-      const downloadLink =
-        'https://github.com/pear-devs/pear-desktop/releases/latest';
+      const downloadLink = 'https://github.com/ArjixWasTaken/pear-desktop/releases/latest';
       const dialogOptions: Electron.MessageBoxOptions = {
         type: 'info',
         buttons: [
