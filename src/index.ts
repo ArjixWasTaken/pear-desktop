@@ -163,11 +163,12 @@ electronDebug({
   showDevTools: false, // Disable automatic devTools on new window
 });
 
-let icon = 'assets/icon.png';
+const iconPath = app.getAppPath();
+let icon = path.join(iconPath, 'assets/icon.png');
 if (process.platform === 'win32') {
-  icon = 'assets/generated/icons/win/icon.ico';
+  icon = path.join(iconPath, 'assets/generated/icons/win/icon.ico');
 } else if (process.platform === 'darwin') {
-  icon = 'assets/generated/icons/mac/icon.icns';
+  icon = path.join(iconPath, 'assets/generated/icons/mac/icon.icns');
 }
 
 function onClosed() {
@@ -349,6 +350,7 @@ async function createMainWindow() {
 
   const electronWindowSettings: Electron.BrowserWindowConstructorOptions = {
     icon,
+    title: '\u0059\u006f\u0075\u0074\u0075\u0062\u0065 \u004D\u0075\u0073\u0069\u0063',
     width: windowSize.width,
     height: windowSize.height,
     minWidth: 325,
