@@ -1,0 +1,14 @@
+name: Clone
+on:
+  workflow_dispatch:
+jobs:
+  clone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run action
+        uses: andrewthetechie/gha-clone-releases@v1.7.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          src_repo: pear-devs/pear-desktop
+          dest_repo: ArjixWasTaken/pear-desktop
+          copy_assets: true
