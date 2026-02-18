@@ -59,7 +59,7 @@ jobs:
               const { data: pr } = await github.rest.pulls.create({
                 owner,
                 repo,
-                title: '[chore] sync with upstream',
+                title: '[chore]: sync with upstream',
                 body: 'This PR automatically pulls the latest commits from the upstream repository.',
                 head,
                 base,
