@@ -2,7 +2,18 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v3.11.3](https://github.com/ArjixWasTaken/pear-desktop/compare/v3.11.2...v3.11.3)
+
+- [chore]: sync with upstream [`#2`](https://github.com/ArjixWasTaken/pear-desktop/pull/2)
+- feat(synced-lyrics): Add Simplified/Traditional Chinese converter and improve Romanization to display tone [`#4111`](https://github.com/ArjixWasTaken/pear-desktop/pull/4111)
+- feat(synced-lyrics): Added Hindi & Bengali romanization support for lyrics [`#3933`](https://github.com/ArjixWasTaken/pear-desktop/pull/3933)
+- Update changelog for v3.11.2 [`af0daa0`](https://github.com/ArjixWasTaken/pear-desktop/commit/af0daa0805c7fe92a9f086e431ba0eb5efc34985)
+- chore(i18n): Translated using Weblate (Korean) [`faddaea`](https://github.com/ArjixWasTaken/pear-desktop/commit/faddaea40308592c9e01301218cc7bb5b1ce9609)
+- chore: overwrite .github with master configuration [`89ab102`](https://github.com/ArjixWasTaken/pear-desktop/commit/89ab102e050f00107663012de8bf8c339b56ad31)
+
 #### [v3.11.2](https://github.com/ArjixWasTaken/pear-desktop/compare/v3.11.1...v3.11.2)
+
+> 7 February 2026
 
 - feat(plugins): restore and fix adblocker plugin (https://github.com/pear-devs/pear-desktop/pull/4212) [`91b983e`](https://github.com/ArjixWasTaken/pear-desktop/commit/91b983eb125d84357bf8a32de09e23cd72c0ec7b)
 - release 3.11.2 [`a1102b3`](https://github.com/ArjixWasTaken/pear-desktop/commit/a1102b3160544170384ddd6fbebe3485fa1b8f44)
