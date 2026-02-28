@@ -748,7 +748,8 @@
       },
       "menu": {
         "default-text-string": {
-          "label": "Numatytasis simbolis tarp dainos tekstų"
+          "label": "Numatytasis simbolis tarp dainos tekstų",
+          "tooltip": "Pasirinkite numatytąjį simbolį kurį naudoti tarpui tarp dainos tekstų"
         },
         "preferred-provider": {
           "label": "Pageidaujamas tiekėjas",
