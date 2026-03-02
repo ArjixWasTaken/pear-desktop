@@ -25,6 +25,34 @@
       },
       "i18n": {
         "loaded": "i18n లోడ్ చేయబడింది"
+      },
+      "second-instance": {
+        "receive-command": "ప్రోటోకాల్ ద్వారా కమాండ్ స్వీకరించబడింది: \"{{command}}\""
+      },
+      "theme": {
+        "css-file-not-found": "CSS ఫైల్ \"{{cssFile}}\" లేదు, విస్మరిస్తున్నాము"
+      },
+      "unresponsive": {
+        "details": "స్పందించని ఎర్రర్!\n{{error}}"
+      },
+      "when-ready": {
+        "clearing-cache-after-20s": "యాప్ కాష్ క్లియర్ చేయబడుతోంది"
+      },
+      "window": {
+        "tried-to-render-offscreen": "విండో స్క్రీన్ వెలుపల రెండర్ చేయడానికి ప్రయత్నించింది, windowSize={{windowSize}}, displaySize={{displaySize}}, position={{position}}"
+      }
+    },
+    "dialog": {
+      "hide-menu-enabled": {
+        "detail": "మెనూ దాచబడింది, దాన్ని చూపించడానికి 'Alt' ఉపయోగించండి (లేదా ఒకవేళ In-App Menu ఉపయోగిస్తుంటే 'Escape' ఉపయోగించండి)",
+        "message": "Hide Menu ఎనేబుల్ చేయబడింది",
+        "title": "Hide Menu ఎనేబుల్ అయిపోయింది"
+      },
+      "need-to-restart": {
+        "buttons": {
+          "later": "తర్వాత",
+          "restart-now": "ఇప్పుడే రీస్టార్ట్ చేయండి"
+        }
       }
     }
   }
