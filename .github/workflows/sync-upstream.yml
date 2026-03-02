@@ -1,0 +1,68 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync from upstream
+        run: |
+          git remote add upstream https://github.com/pear-devs/pear-desktop
+          git fetch upstream master
+          git checkout -B upstream upstream/master
+          
+          # Overwrite .github from master to avoid workflow permission errors
+          git checkout master -- .github
+          git commit -m "chore: overwrite .github with master configuration" || echo "No changes to .github"
+          
+          git push origin upstream --force
+
+      - name: Create or update Pull Request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const head = 'upstream';
+            const base = 'master';
+
+            // Check if PR already exists
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              head: `${owner}:${head}`,
+              base,
+            });
+
+            if (pullRequests.length > 0) {
+              console.log(`PR already exists: ${pullRequests[0].html_url}`);
+            } else {
+              const { data: pr } = await github.rest.pulls.create({
+                owner,
+                repo,
+                title: '[chore]: sync with upstream',
+                body: 'This PR automatically pulls the latest commits from the upstream repository.',
+                head,
+                base,
+              });
+              console.log(`Created PR: ${pr.html_url}`);
+            }
