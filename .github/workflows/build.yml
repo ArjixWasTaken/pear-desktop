@@ -19,7 +19,7 @@ jobs:
         os: [ macos-26, ubuntu-latest, windows-latest ]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v5
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -45,20 +45,20 @@ jobs:
 
       # Only vite build without release if it is a fork, or it is a pull-request
       - name: Vite Build
-        if: github.repository == 'pear-devs/pear-desktop' && github.event_name == 'pull_request'
+        if: github.repository == 'ArjixWasTaken/pear-desktop' && github.event_name == 'pull_request'
         run: |
           pnpm build
 
       # Build and release if it's the main repository and is not pull-request
       - name: Build and release on Mac
-        if: startsWith(matrix.os, 'macOS') && (github.repository == 'pear-devs/pear-desktop' && github.event_name != 'pull_request')
+        if: startsWith(matrix.os, 'macOS') && (github.repository == 'ArjixWasTaken/pear-desktop' && github.event_name != 'pull_request')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pnpm release:mac
 
       - name: Build and release on Linux
-        if: startsWith(matrix.os, 'ubuntu') && (github.repository == 'pear-devs/pear-desktop' && github.event_name != 'pull_request')
+        if: startsWith(matrix.os, 'ubuntu') && (github.repository == 'ArjixWasTaken/pear-desktop' && github.event_name != 'pull_request')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -72,7 +72,7 @@ jobs:
           pnpm release:linux
 
       - name: Build and release on Windows
-        if: startsWith(matrix.os, 'windows') && (github.repository == 'pear-devs/pear-desktop' && github.event_name != 'pull_request')
+        if: startsWith(matrix.os, 'windows') && (github.repository == 'ArjixWasTaken/pear-desktop' && github.event_name != 'pull_request')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -89,10 +89,10 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release Pear Desktop
-    if: github.repository == 'pear-devs/pear-desktop' && github.ref == 'refs/heads/master'
+    if: github.repository == 'ArjixWasTaken/pear-desktop' && github.ref == 'refs/heads/master'
     needs: build
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -142,7 +142,7 @@ jobs:
         if: ${{ env.VERSION_HASH == '' }}
         uses: irongut/EditRelease@v1.2.0
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           id: ${{ steps.get_draft_release.outputs.id }}
           draft: false
           prerelease: false
@@ -150,7 +150,7 @@ jobs:
           name: ${{ env.VERSION_TAG }}
           replacebody: true
           body: |
-            See [changelog](https://github.com/pear-devs/pear-desktop/blob/master/changelog.md#${{ env.CHANGELOG_ANCHOR }}) for the list of updates and the full diff.
+            See [changelog](https://github.com/ArjixWasTaken/pear-desktop/blob/master/changelog.md#${{ env.CHANGELOG_ANCHOR }}) for the list of updates and the full diff.
 
             Thanks to all contributors! 🏅
 
@@ -163,7 +163,7 @@ jobs:
 
       - name: Commit changelog
         if: ${{ env.VERSION_HASH == '' }}
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: Update changelog for ${{ env.VERSION_TAG }}
           file_pattern: "changelog.md"
