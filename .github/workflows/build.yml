@@ -3,13 +3,16 @@ name: Build Pear Desktop
 on:
   push:
     branches: [ master ]
-  pull_request:
+
+permissions: {}
 
 env:
   NODE_VERSION: "22.x"
 
 jobs:
   build:
+    permissions:
+      contents: write
     if: github.event.pull_request.draft == false
     name: Build Pear Desktop
     runs-on: ${{ matrix.os }}
@@ -87,6 +90,8 @@ jobs:
 
 
   release:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     name: Release Pear Desktop
     if: github.repository == 'ArjixWasTaken/pear-desktop' && github.ref == 'refs/heads/master'
