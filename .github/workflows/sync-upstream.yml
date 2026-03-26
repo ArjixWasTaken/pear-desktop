@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: master
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Configure Git
         run: |
@@ -27,7 +27,7 @@ jobs:
       - name: Sync from upstream
         run: |
           git remote add upstream https://github.com/pear-devs/pear-desktop
-          git fetch upstream master
+          git fetch upstream
           git checkout -B upstream upstream/master
           
           # Overwrite .github from master to avoid workflow permission errors
