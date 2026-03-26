@@ -10,8 +10,6 @@ on:
         required: true
         type: string
 
-permissions: {}
-
 jobs:
   winget:
     name: Publish winget package
