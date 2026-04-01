@@ -572,10 +572,17 @@ type PromiseOrValue<T> = T | Promise<T>;
 export const register = (
   app: HonoApp,
   { window }: BackendContext<APIServerConfig>,
-  songInfoGetter: () => PromiseOrValue<SongInfo | undefined>,
-  repeatModeGetter: () => PromiseOrValue<RepeatMode | undefined>,
-  likeTypeGetter: () => PromiseOrValue<LikeType | undefined>,
-  volumeStateGetter: () => PromiseOrValue<VolumeState | undefined>,
+  {
+    songInfoGetter,
+    repeatModeGetter,
+    likeTypeGetter,
+    volumeStateGetter,
+  }: {
+    songInfoGetter: () => PromiseOrValue<SongInfo | undefined>;
+    repeatModeGetter: () => PromiseOrValue<RepeatMode | undefined>;
+    likeTypeGetter: () => PromiseOrValue<LikeType | undefined>;
+    volumeStateGetter: () => PromiseOrValue<VolumeState | undefined>;
+  },
 ) => {
   const controller = getSongControls(window);
 

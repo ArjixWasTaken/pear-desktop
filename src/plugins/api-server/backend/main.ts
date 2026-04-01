@@ -105,6 +105,7 @@ export const backend = createBackend<BackendType, APIServerConfig>({
       }
       await next();
     });
+
     this.app.use('/api/*', async (ctx, next) => {
       const result = await JWTPayloadSchema.spa(await ctx.get('jwtPayload'));
       const config = await backendCtx.getConfig();
@@ -121,17 +122,16 @@ export const backend = createBackend<BackendType, APIServerConfig>({
     });
 
     // routes
-    registerControl(
-      this.app,
-      backendCtx,
-      () => this.songInfo,
-      () => this.currentRepeatMode,
-      () =>
+    registerControl(this.app, backendCtx, {
+      songInfoGetter: () => this.songInfo,
+      repeatModeGetter: () => this.currentRepeatMode,
+      likeTypeGetter: () =>
         backendCtx.window.webContents.executeJavaScript(
           'document.querySelector("#like-button-renderer")?.likeStatus',
         ) as Promise<LikeType>,
-      () => this.volumeState,
-    );
+      volumeStateGetter: () => this.volumeState,
+    });
+
     registerAuth(this.app, backendCtx);
     registerWebsocket(this.app, backendCtx, ws);
 

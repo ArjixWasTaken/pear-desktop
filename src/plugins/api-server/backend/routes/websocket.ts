@@ -1,6 +1,6 @@
 import { createRoute } from '@hono/zod-openapi';
 
-import { type NodeWebSocket } from '@hono/node-ws';
+import type { createNodeWebSocket, NodeWebSocket } from '@hono/node-ws';
 
 import {
   registerCallback,
@@ -10,7 +10,6 @@ import {
 
 import { API_VERSION } from '../api-version';
 
-import type { WSContext } from 'hono/ws';
 import type { Context, Next } from 'hono';
 import type { RepeatMode, VolumeState } from '@/types/datahost-get-state';
 import type { HonoApp } from '../types';
@@ -37,6 +36,11 @@ type PlayerState = {
   shuffle: boolean;
 };
 
+// prettier-ignore
+type TUpgradeWebSocket = ReturnType<typeof createNodeWebSocket>['upgradeWebSocket'];
+type TOnOpen = Required<Parameters<TUpgradeWebSocket>[1]>['onOpen'];
+type TWebSocket = Parameters<TOnOpen>['1'];
+
 export const register = (
   app: HonoApp,
   { ipc }: BackendContext<APIServerConfig>,
@@ -47,7 +51,7 @@ export const register = (
   let shuffle = false;
   let lastSongInfo: SongInfo | undefined = undefined;
 
-  const sockets = new Set<WSContext<WebSocket>>();
+  const sockets = new Set<TWebSocket>();
 
   const send = (type: DataTypes, state: Partial<PlayerState>) => {
     sockets.forEach((socket) =>
@@ -130,8 +134,7 @@ export const register = (
     }),
     upgradeWebSocket(() => ({
       onOpen(_, ws) {
-        // "Unsafe argument of type `WSContext<WebSocket>` assigned to a parameter of type `WSContext<WebSocket>`. (@typescript-eslint/no-unsafe-argument)" ????? what?
-        sockets.add(ws as WSContext<WebSocket>);
+        sockets.add(ws);
 
         ws.send(
           JSON.stringify({
@@ -147,7 +150,7 @@ export const register = (
       },
 
       onClose(_, ws) {
-        sockets.delete(ws as WSContext<WebSocket>);
+        sockets.delete(ws);
       },
     })) as (ctx: Context, next: Next) => Promise<Response>,
   );
