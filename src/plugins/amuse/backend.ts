@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 
-import { type Context, Hono } from 'hono';
+import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 
@@ -40,24 +40,26 @@ export default createBackend({
       this.currentSongInfo = songInfo;
     });
 
-    this.app = new Hono();
-    this.app.use('*', cors());
-    this.app.get('/', (ctx) =>
-      ctx.body(t('plugins.amuse.response.query'), 200),
-    );
-
-    const queryAndApiHandler = (ctx: Context) => {
-      return ctx.json(formatSongInfo(this.currentSongInfo), 200);
-    };
-
-    this.app.get('/query', queryAndApiHandler);
-    this.app.get('/api', queryAndApiHandler);
+    this.app = new Hono()
+      .use(cors())
+      .onError((error, ctx) => {
+        console.error('[amuse]', error);
+        return ctx.json({ message: 'Internal Server Error' }, 500);
+      })
+      .get('/', (ctx) => ctx.body(t('plugins.amuse.response.query'), 200))
+      .on('GET', ['/query', '/api'], (ctx) => {
+        return ctx.json(formatSongInfo(this.currentSongInfo), 200);
+      });
 
     try {
-      this.server = serve({
-        fetch: this.app.fetch.bind(this.app),
-        port: amusePort,
-      });
+      this.server = serve(
+        {
+          fetch: this.app.fetch.bind(this.app),
+          port: amusePort,
+        },
+        ({ address, port }) =>
+          console.log(`[amuse] Listening on ${address}:${port}`),
+      );
     } catch (err) {
       console.error(err);
     }
