@@ -55,10 +55,11 @@ export default createBackend({
       this.server = serve(
         {
           fetch: this.app.fetch.bind(this.app),
+          // hostname: "127.0.0.1",
           port: amusePort,
         },
-        ({ address, port }) =>
-          console.log(`[amuse] Listening on ${address}:${port}`),
+        ({ address, port, family }) =>
+          console.log(`[amuse] Listening on ${family} - [${address}:${port}]`),
       );
     } catch (err) {
       console.error(err);
