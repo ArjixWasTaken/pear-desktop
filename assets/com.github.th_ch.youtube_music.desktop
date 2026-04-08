@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=YouTube Music
+Exec=/usr/bin/flatpak run --branch=master --arch=x86_64 --command=electron-wrapper --file-forwarding com.github.th_ch.youtube_music @@u %U @@
+Terminal=false
+Type=Application
+Icon=youtube-music
+StartupWMClass=youtube-music
+Comment=YouTube Music Desktop App bundled with custom plugins
+Categories=AudioVideo;
+X-Flatpak=com.github.th_ch.youtube_music
