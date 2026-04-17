@@ -5,17 +5,18 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: write
     steps:
       - name: Checkout master
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
           ref: master
           fetch-depth: 0
           clean: true
@@ -30,7 +31,11 @@ jobs:
         run: |
           git remote add upstream https://github.com/pear-devs/pear-desktop
           git fetch upstream
-          git merge upstream/master
+          git merge upstream/master -X ours || true
+          git diff --name-only --diff-filter=U | while read file; do
+              git rm -f "$file"
+          done
+          git commit -m "Auto-resolve merge conflicts (prefer deletions)" || true
           git branch -M upstream
           git push origin HEAD --force
 
