@@ -3,6 +3,7 @@ import { createServer as createHttpsServer } from 'node:https';
 import { readFileSync } from 'node:fs';
 
 import { jwt } from 'hono/jwt';
+
 import { OpenAPIHono as Hono } from '@hono/zod-openapi';
 import { cors } from 'hono/cors';
 import { swaggerUI } from '@hono/swagger-ui';
@@ -18,6 +19,8 @@ import { registerAuth, registerControl, registerWebsocket } from './routes';
 import { APPLICATION_NAME } from '@/i18n';
 
 import { type APIServerConfig, AuthStrategy } from '../config';
+
+import type { MiddlewareHandler } from 'hono';
 
 import type { BackendType } from './types';
 import type {
@@ -94,7 +97,7 @@ export const backend = createBackend<BackendType, APIServerConfig>({
     });
 
     // middlewares
-    this.app.use('/api/*', async (ctx, next) => {
+    const jwtGuard: MiddlewareHandler = async (ctx, next) => {
       const config = await backendCtx.getConfig();
 
       if (config.authStrategy !== AuthStrategy.NONE) {
