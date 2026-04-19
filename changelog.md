@@ -2,7 +2,28 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v3.11.5](https://github.com/ArjixWasTaken/pear-desktop/compare/v3.11.4...v3.11.5)
+
+- chore(deps): update dependency ts-morph to v28 [`#4423`](https://github.com/ArjixWasTaken/pear-desktop/pull/4423)
+- fix(deps): update dependency virtua to v0.49.1 [`#4340`](https://github.com/ArjixWasTaken/pear-desktop/pull/4340)
+- chore(deps): update dependency builtin-modules to v5.1.0 [`#4421`](https://github.com/ArjixWasTaken/pear-desktop/pull/4421)
+- chore(deps): update dependency pinyin-pro to v3.28.1 [`#4414`](https://github.com/ArjixWasTaken/pear-desktop/pull/4414)
+- chore(deps): update dependency @babel/runtime to v7.29.2 [`#4415`](https://github.com/ArjixWasTaken/pear-desktop/pull/4415)
+- chore(deps): update actions/dependency-review-action digest to f5b9717 [`#4395`](https://github.com/ArjixWasTaken/pear-desktop/pull/4395)
+- refactor(taskbar-mediacontrol): Removed jimp dependency [`#4202`](https://github.com/ArjixWasTaken/pear-desktop/pull/4202)
+- chore(deps): update dependency electron to v40.8.5 [`#4342`](https://github.com/ArjixWasTaken/pear-desktop/pull/4342)
+- [chore]: sync with upstream [`#12`](https://github.com/ArjixWasTaken/pear-desktop/pull/12)
+- [chore]: sync with upstream [`#11`](https://github.com/ArjixWasTaken/pear-desktop/pull/11)
+- [chore]: sync with upstream [`#8`](https://github.com/ArjixWasTaken/pear-desktop/pull/8)
+- fix(api-server): add required 'alg' option to JWT middleware [`#4368`](https://github.com/ArjixWasTaken/pear-desktop/pull/4368)
+- fix: migrate custom element from ES5 to ES6 [`#4416`](https://github.com/ArjixWasTaken/pear-desktop/issues/4416)
+- Bump version from 3.11.4 to 3.11.5 [`254325f`](https://github.com/ArjixWasTaken/pear-desktop/commit/254325fb33727a220b2e163a99ed073377d8dc3e)
+- fix: remove redundant closing parenthesis [`daeaef8`](https://github.com/ArjixWasTaken/pear-desktop/commit/daeaef8646b7ea5015ede5148f719a5eb190e4c7)
+- Merge pull request #14 from InaBuild/master [`67c108a`](https://github.com/ArjixWasTaken/pear-desktop/commit/67c108a4f2cb8d83f506334c85be0a59d3463a98)
+
 #### [v3.11.4](https://github.com/ArjixWasTaken/pear-desktop/compare/v3.11.3...v3.11.4)
+
+> 21 March 2026
 
 - Fixed downloader by updating Youtubei.js dependency. [`#9`](https://github.com/ArjixWasTaken/pear-desktop/pull/9)
 - doc: installation instructions for Solus [`#4352`](https://github.com/ArjixWasTaken/pear-desktop/pull/4352)
