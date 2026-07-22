@@ -69,8 +69,7 @@ jobs:
 
             TASK 2 — Duplicate detection.
             Search OPEN issues for a near-identical existing report. Prefer the same
-            label set (bug issues use label "bug :beetle:", features use
-            "enhancement :sparkles:"). Examples:
+            labels (bug issues use "bug", features use "enhancement"). Examples:
               gh issue list --state open --limit 50 --json number,title,labels
               gh search issues --repo ${{ github.repository }} --state open "<keywords>"
             ONLY if you are 100% certain this issue duplicates one specific existing
@@ -79,5 +78,29 @@ jobs:
               gh issue comment ${{ github.event.issue.number }} --body "Possible duplicate of #<n>."
             If you are not 100% certain, do nothing for this task.
             NEVER close, lock, or reassign the issue.
+
+            TASK 3 — Completeness (bug issues only; skip for feature requests).
+            The bug form renders each field as a "### <label>" section header followed
+            by the answer. Required sections: "Pear Desktop (Application) Version",
+            "What operating system are you using?", "Operating System Version",
+            "What CPU architecture are you using?", "Reproduction steps",
+            "Expected Behavior", "Actual Behavior", "Enabled plugins".
+            A section counts as EMPTY if its content is blank, "_No response_", or
+            clearly low-effort ("n/a", "none", "idk", "-"). If ANY required section is
+            empty, do BOTH (one comment only):
+              gh issue edit ${{ github.event.issue.number }} --add-label "need more information"
+              gh issue comment ${{ github.event.issue.number }} --body "Thanks for the report! Please fill in the following required section(s) so we can investigate: <list them>."
+            If all required sections are filled, do nothing for this task.
+
+            TASK 4 — Area label.
+            Add AT MOST the clearly-applicable labels from this EXACT allowlist (these
+            already exist — never create new labels): electron-issue,
+            official-youtube-music-issue, documentation, plugin request, question.
+            Guidance: "electron-issue" = an Electron/runtime crash unrelated to app
+            code; "official-youtube-music-issue" = a bug reproducible on
+            music.youtube.com itself; "plugin request" = asks for a new plugin or new
+            plugin functionality; "documentation" = docs/README; "question" = a support
+            question, not a bug/request. Apply only when confident, else none:
+              gh issue edit ${{ github.event.issue.number }} --add-label "<label>"
 
             When done, print a one-line summary of what you changed (or "no changes").
