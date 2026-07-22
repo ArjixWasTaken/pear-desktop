@@ -3,6 +3,9 @@ name: AI Issue Triage
 on:
   issues:
     types: [opened]
+  # Manual re-trigger: an org member comments "/triage" on any issue.
+  issue_comment:
+    types: [created]
 
 permissions: {}
 
@@ -12,10 +15,22 @@ concurrency:
 
 jobs:
   triage:
-    name: Triage new issue
+    name: Triage issue
     runs-on: ubuntu-latest
-    # Skip bot-authored issues; skip if the AI key is not configured.
-    if: ${{ github.event.issue.user.type != 'Bot' }}
+    # Run when:
+    #  - a non-bot opens a new issue, OR
+    #  - an org member (author_association OWNER/MEMBER) comments "/triage" on an
+    #    issue (not a PR). author_association is set by GitHub and cannot be forged.
+    if: >-
+      ${{
+        (github.event_name == 'issues' && github.event.issue.user.type != 'Bot') ||
+        (github.event_name == 'issue_comment' &&
+         !github.event.issue.pull_request &&
+         contains(github.event.comment.body, '/triage') &&
+         (github.event.comment.author_association == 'OWNER' ||
+          github.event.comment.author_association == 'MEMBER') &&
+         github.event.comment.user.type != 'Bot')
+      }}
     permissions:
       issues: write
       contents: read
