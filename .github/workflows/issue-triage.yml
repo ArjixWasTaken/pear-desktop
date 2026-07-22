@@ -1,0 +1,76 @@
+name: AI Issue Triage
+
+on:
+  issues:
+    types: [opened]
+
+permissions: {}
+
+concurrency:
+  group: issue-triage-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    name: Triage new issue
+    runs-on: ubuntu-latest
+    # Skip bot-authored issues; skip if the AI key is not configured.
+    if: ${{ github.event.issue.user.type != 'Bot' }}
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Run triage agent
+        # anthropics/claude-code-action v1.0.181
+        uses: anthropics/claude-code-action@44423bdec74b97d67543eb16c110546762c110b2
+        env:
+          # Point Claude Code at DeepSeek's Anthropic-compatible endpoint.
+          ANTHROPIC_BASE_URL: https://api.deepseek.com/anthropic
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.DEEPSEEK_API_KEY }}
+          ANTHROPIC_MODEL: deepseek-v4-flash
+          ANTHROPIC_SMALL_FAST_MODEL: deepseek-v4-flash
+          # Authenticates the `gh` CLI the agent uses for GitHub operations.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          anthropic_api_key: ${{ secrets.DEEPSEEK_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Minimal, auditable toolset. No close/lock/delete is possible.
+          claude_args: |
+            --model deepseek-v4-flash
+            --allowedTools "Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh search issues:*),Bash(gh issue edit:*),Bash(gh issue comment:*)"
+          prompt: |
+            You are an issue-triage bot for the GitHub repo ${{ github.repository }}.
+            Act on issue #${{ github.event.issue.number }} only. Use the `gh` CLI for all
+            GitHub operations. Be conservative: when unsure, do nothing.
+
+            First, read the issue:
+              gh issue view ${{ github.event.issue.number }} --json number,title,body,labels
+
+            TASK 1 — Title.
+            The bug/feature templates ship placeholder titles "[Bug]: " and
+            "[Feature Request]: ". Decide if the current title is bad:
+              - empty placeholder: the title, trimmed, equals exactly "[Bug]:" or
+                "[Feature Request]:" (nothing meaningful after the colon), OR
+              - low-quality/vague (e.g. "it doesn't work", "bug", "help").
+            If the title is bad, write a concise (<= 70 chars) descriptive title derived
+            from the body. PRESERVE the existing bracket prefix ("[Bug]:" or
+            "[Feature Request]:") if present, and append the summary after it, e.g.
+            "[Bug]: Crash when enabling Album Color Theme on Linux".
+            Apply it with:
+              gh issue edit ${{ github.event.issue.number }} --title "<new title>"
+            If the title is already good, leave it unchanged and do not run edit.
+
+            TASK 2 — Duplicate detection.
+            Search OPEN issues for a near-identical existing report. Prefer the same
+            label set (bug issues use label "bug :beetle:", features use
+            "enhancement :sparkles:"). Examples:
+              gh issue list --state open --limit 50 --json number,title,labels
+              gh search issues --repo ${{ github.repository }} --state open "<keywords>"
+            ONLY if you are 100% certain this issue duplicates one specific existing
+            open issue #<n> (and #<n> is not this issue), do BOTH:
+              gh issue edit ${{ github.event.issue.number }} --add-label "duplicate"
+              gh issue comment ${{ github.event.issue.number }} --body "Possible duplicate of #<n>."
+            If you are not 100% certain, do nothing for this task.
+            NEVER close, lock, or reassign the issue.
+
+            When done, print a one-line summary of what you changed (or "no changes").
