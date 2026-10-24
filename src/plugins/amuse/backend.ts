@@ -2,7 +2,7 @@ import { t } from 'i18next';
 
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { serve } from '@hono/node-server';
+import { t } from 'i18next';
 
 import { registerCallback, type SongInfo } from '@/providers/song-info';
 import { createBackend } from '@/utils';
