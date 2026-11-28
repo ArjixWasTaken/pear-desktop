@@ -1,30 +1,30 @@
 import prompt from 'custom-electron-prompt';
 
 import { t } from '@/i18n';
-import { createPlugin } from '@/utils';
+import { createAddToToastAction } from '@/plugins/utils/renderer';
 import promptOptions from '@/providers/prompt-options';
+import { createPlugin } from '@/utils';
 import { waitForElement } from '@/utils/wait-for-element';
 
+import { Connection, type ConnectionEventUnion } from './connection';
+import { Queue } from './queue';
+import style from './style.css?inline';
+import settingHTML from './templates/setting.html?raw';
 import {
   getDefaultProfile,
   type Permission,
   type Profile,
   type VideoData,
 } from './types';
-import { Queue } from './queue';
-import { Connection, type ConnectionEventUnion } from './connection';
-import { createHostPopup } from './ui/host';
 import { createGuestPopup } from './ui/guest';
+import { createHostPopup } from './ui/host';
 import { createSettingPopup } from './ui/setting';
 
-import settingHTML from './templates/setting.html?raw';
-import style from './style.css?inline';
-
-import type { DataConnection } from 'peerjs';
-import type { MusicPlayer } from '@/types/music-player';
 import type { RendererContext } from '@/types/contexts';
-import type { VideoDataChanged } from '@/types/video-data-changed';
+import type { MusicPlayer } from '@/types/music-player';
 import type { AppElement } from '@/types/queue';
+import type { VideoDataChanged } from '@/types/video-data-changed';
+import type { DataConnection } from 'peerjs';
 
 type RawAccountData = {
   accountName: {
@@ -191,18 +191,22 @@ export default createPlugin<
 
       this.connection.onConnections((connection) => {
         if (!connection) {
-          this.api?.toastService?.show(
-            t('plugins.music-together.toast.disconnected'),
+          this.api?.handleAddToToastAction?.(
+            createAddToToastAction(
+              t('plugins.music-together.toast.disconnected'),
+            ),
           );
           this.onStop();
           return;
         }
 
         if (!connection.open) {
-          this.api?.toastService?.show(
-            t('plugins.music-together.toast.user-disconnected', {
-              name: this.profiles[connection.peer]?.name,
-            }),
+          this.api?.handleAddToToastAction?.(
+            createAddToToastAction(
+              t('plugins.music-together.toast.user-disconnected', {
+                name: this.profiles[connection.peer]?.name,
+              }),
+            ),
           );
           this.putProfile(connection.peer, undefined);
         }
@@ -301,10 +305,12 @@ export default createPlugin<
               break;
             }
 
-            this.api?.toastService?.show(
-              t('plugins.music-together.toast.user-connected', {
-                name: event.payload.profile.name,
-              }),
+            this.api?.handleAddToToastAction?.(
+              createAddToToastAction(
+                t('plugins.music-together.toast.user-connected', {
+                  name: event.payload.profile.name,
+                }),
+              ),
             );
             this.putProfile(conn.peer, event.payload.profile);
             break;
@@ -403,8 +409,10 @@ export default createPlugin<
       if (!connection) return false;
       this.connection.onConnections((connection) => {
         if (!connection?.open) {
-          this.api?.toastService?.show(
-            t('plugins.music-together.toast.disconnected'),
+          this.api?.handleAddToToastAction?.(
+            createAddToToastAction(
+              t('plugins.music-together.toast.disconnected'),
+            ),
           );
           this.onStop();
         }
@@ -560,10 +568,12 @@ export default createPlugin<
               `plugins.music-together.menu.permission.${this.permission}`,
             );
 
-            this.api?.toastService?.show(
-              t('plugins.music-together.toast.permission-changed', {
-                permission: permissionLabel,
-              }),
+            this.api?.handleAddToToastAction?.(
+              createAddToToastAction(
+                t('plugins.music-together.toast.permission-changed', {
+                  permission: permissionLabel,
+                }),
+              ),
             );
             break;
           }
@@ -778,8 +788,8 @@ export default createPlugin<
         onItemClick: (id) => {
           if (id === 'music-together-close') {
             this.onStop();
-            this.api?.toastService?.show(
-              t('plugins.music-together.toast.closed'),
+            this.api?.handleAddToToastAction?.(
+              createAddToToastAction(t('plugins.music-together.toast.closed')),
             );
             hostPopup.dismiss();
           }
@@ -788,14 +798,18 @@ export default createPlugin<
             navigator.clipboard
               .writeText(this.connection?.id ?? '')
               .then(() => {
-                this.api?.toastService?.show(
-                  t('plugins.music-together.toast.id-copied'),
+                this.api?.handleAddToToastAction?.(
+                  createAddToToastAction(
+                    t('plugins.music-together.toast.id-copied'),
+                  ),
                 );
                 hostPopup.dismiss();
               })
               .catch(() => {
-                this.api?.toastService?.show(
-                  t('plugins.music-together.toast.id-copy-failed'),
+                this.api?.handleAddToToastAction?.(
+                  createAddToToastAction(
+                    t('plugins.music-together.toast.id-copy-failed'),
+                  ),
                 );
                 hostPopup.dismiss();
               });
@@ -815,10 +829,12 @@ export default createPlugin<
             const permissionLabel = t(
               `plugins.music-together.menu.permission.${this.permission}`,
             );
-            this.api?.toastService?.show(
-              t('plugins.music-together.toast.permission-changed', {
-                permission: permissionLabel,
-              }),
+            this.api?.handleAddToToastAction?.(
+              createAddToToastAction(
+                t('plugins.music-together.toast.permission-changed', {
+                  permission: permissionLabel,
+                }),
+              ),
             );
             const item = hostPopup.items.find((it) => it?.element.id === id);
             if (item?.type === 'item') {
@@ -831,8 +847,10 @@ export default createPlugin<
         onItemClick: (id) => {
           if (id === 'music-together-disconnect') {
             this.onStop();
-            this.api?.toastService?.show(
-              t('plugins.music-together.toast.disconnected'),
+            this.api?.handleAddToToastAction?.(
+              createAddToToastAction(
+                t('plugins.music-together.toast.disconnected'),
+              ),
             );
             guestPopup.dismiss();
           }
@@ -850,20 +868,26 @@ export default createPlugin<
               navigator.clipboard
                 .writeText(this.connection?.id ?? '')
                 .then(() => {
-                  this.api?.toastService?.show(
-                    t('plugins.music-together.toast.id-copied'),
+                  this.api?.handleAddToToastAction?.(
+                    createAddToToastAction(
+                      t('plugins.music-together.toast.id-copied'),
+                    ),
                   );
                   hostPopup.showAtAnchor(setting);
                 })
                 .catch(() => {
-                  this.api?.toastService?.show(
-                    t('plugins.music-together.toast.id-copy-failed'),
+                  this.api?.handleAddToToastAction?.(
+                    createAddToToastAction(
+                      t('plugins.music-together.toast.id-copy-failed'),
+                    ),
                   );
                   hostPopup.showAtAnchor(setting);
                 });
             } else {
-              this.api?.toastService?.show(
-                t('plugins.music-together.toast.host-failed'),
+              this.api?.handleAddToToastAction?.(
+                createAddToToastAction(
+                  t('plugins.music-together.toast.host-failed'),
+                ),
               );
             }
           }
@@ -875,13 +899,17 @@ export default createPlugin<
             this.hideSpinner();
 
             if (result) {
-              this.api?.toastService?.show(
-                t('plugins.music-together.toast.joined'),
+              this.api?.handleAddToToastAction?.(
+                createAddToToastAction(
+                  t('plugins.music-together.toast.joined'),
+                ),
               );
               guestPopup.showAtAnchor(setting);
             } else {
-              this.api?.toastService?.show(
-                t('plugins.music-together.toast.join-failed'),
+              this.api?.handleAddToToastAction?.(
+                createAddToToastAction(
+                  t('plugins.music-together.toast.join-failed'),
+                ),
               );
             }
           }
